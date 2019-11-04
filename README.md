@@ -22,12 +22,12 @@ FUN_TYPE = (...)
 
 ### Alpha Values
 
-For each FUN_TYPE:
+For each FUN_TYPE, ALPHA will be set to:
 
 ```
-    0.00
-+/- 0.05
-+/- 0.40
-+/- 1.00
+     0.00
++/-  0.05
++/-  0.40
++/-  1.00
 +/- 50.00
 ```

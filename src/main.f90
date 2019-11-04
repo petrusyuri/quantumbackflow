@@ -2,8 +2,7 @@ program jump
 
     use jump_integration
     use eispack
-    use omp_lib
-
+    
     implicit none
 
     real (kind = 8) interval, x_test
@@ -104,34 +103,6 @@ program jump
         points(test + 1) = w(1)
 
         write(*, fmt = '(F18.12, A)') w(1), ";"
-
-!        pause
-!
-!        open(1, file = 'data.csv', status = 'new')
-!
-!        do row = 1, MODEL_N
-!            do col = 1, MODEL_N
-!                if(realMatrix(row, col) >= 0) then
-!                    write(1, fmt = '(A)', advance = "no") "+"
-!                end if
-!
-!                write(1, fmt = '(F28.20)', advance = "no") realMatrix(row, col)
-!
-!                if(imagMatrix(row, col) >= 0) then
-!                    write(1, fmt = '(A)', advance = "no") "+"
-!                end if
-!
-!                write(1, fmt = '(F28.20, A)', advance = "no") imagMatrix(row, col), "i"
-!
-!                if(col < MODEL_N) then
-!                    write(1, fmt = '(A)', advance = "no") ";"
-!                else
-!                    write(1, fmt = '(A)', advance = "yes") ""
-!                end if
-!            end do
-!        end do
-!
-!        close(1)
 
     end do
 

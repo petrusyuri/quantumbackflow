@@ -1,26 +1,22 @@
-# Alexandre's Thesis Project
+# Jump Model
 
-## Author: Petrus Yuri and Alexandre Hefren
+**Author:** Petrus Yuri and Alexandre Hefren
 
-GitHub repository created for Alexandre's Thesis. 
+1. FUN_TYPE = 1 -> Gaussian Function
+2. FUN_TYPE = 2 -> Lorentzian Function
+3. FUN_TYPE = 3 -> Rectangular Function
 
-- Jump Model
-
-FUN_TYPE = 1 -> Gaussian Function
-FUN_TYPE = 2 -> Lorentzian Function
-FUN_TYPE = 3 -> Rectangular Function
-
-* To-do simulations
+** To-do simulations **
 
 1) Parameters
 
-N        = 2000
+'N        = 2000
 P_CUTOFF = 500
 ALPHA    = (...)
 X_LOW    = -1
 X_HIGH   = +1
 X_STEPS  = 100
-FUN_TYPE = (...)
+FUN_TYPE = (...)'
 
 2) Alpha Values
 

@@ -6,9 +6,9 @@
 2. FUN_TYPE = 2 -> Lorentzian Function
 3. FUN_TYPE = 3 -> Rectangular Function
 
-**To-do simulations**
+## To-do simulations
 
-1) Parameters
+### Parameters
 
 ```
 N        = 2000
@@ -20,10 +20,11 @@ X_STEPS  = 100
 FUN_TYPE = (...)
 ```
 
-2) Alpha Values
+### Alpha Values
 
 For each FUN_TYPE:
 
+```
     00.00
 +/- 00.02
 +/- 00.50
@@ -31,3 +32,4 @@ For each FUN_TYPE:
 +/- 10.00
 +/- 50.00
 +/- 20000.00
+```

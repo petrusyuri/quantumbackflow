@@ -1,6 +1,6 @@
 # alexandrethesis
 Alexandre's Thesis Project
 
-GitHub repository created for Alexandre's Thesis. 
+Author: Petrus Yuri and Alexandre Hefren
 
-Developed by Petrus Yuri and Alexandre Hefren.
+GitHub repository created for Alexandre's Thesis. 

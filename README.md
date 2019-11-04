@@ -1,7 +1,6 @@
-# alexandrethesis
-Alexandre's Thesis Project
+# Alexandre's Thesis Project
 
-Author: Petrus Yuri and Alexandre Hefren
+## Author: Petrus Yuri and Alexandre Hefren
 
 GitHub repository created for Alexandre's Thesis. 
 

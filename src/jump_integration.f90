@@ -230,12 +230,6 @@ contains
 
             call dqagpe (IntegrandImag, x_a, x_b, 2, points, epsabs, epsrel, limit, imagPart, abserr, neval, ier, &
             alist,blist,rlist,elist,pts,iord,level,ndin,last)
-
-!            call dqag (IntegrandReal, x_a, x_b, epsabs, epsrel, key, imagPart, abserr, neval, ier, &
-!            limit, lenw, last, iwork, work)
-!
-!            call dqag (IntegrandImag, x_a, x_b, epsabs, epsrel, key, imagPart, abserr, neval, ier, &
-!            limit, lenw, last, iwork, work)
         end if
 
         Integrate = DCMPLX(realPart, imagPart)

@@ -14,12 +14,13 @@ module jump_integration
 
 contains
 
-    subroutine JumpModel(N_in, P_CUTOFF_in, FUN_TYPE_in)
+    subroutine JumpModel(N_in, P_CUTOFF_in, ALPHA_in, FUN_TYPE_in)
         integer (kind = 4) N_in, FUN_TYPE_in
-        real (kind = 8) P_CUTOFF_in
+        real (kind = 8) P_CUTOFF_in, ALPHA_in
 
         N = REAL(N_in, kind = 8)
         P_CUTOFF = P_CUTOFF_in
+        ALPHA    = ALPHA_in
         FUN_TYPE = FUN_TYPE_in
     end subroutine
 
@@ -236,4 +237,39 @@ contains
         Integrate = DCMPLX(realPart, imagPart)
         return
     end function
+
+    ! -------------------------------
+    ! GNUPLOT ROUTINE
+    ! -------------------------------
+
+    subroutine GeneratePlotFile(gpltfile, datafile, plotfile, X_LOW, X_HIGH)
+        character(255) :: gpltfile, datafile, plotfile
+        real(kind = 8)  :: X_LOW, X_HIGH
+
+        open(3, file = gpltfile, status = 'new')
+
+        write(3,'(a)') "set encoding utf8"
+        write(3,'(a)') "set terminal png size 960, 720 enhanced"
+        write(3,'(a)') "set output '"//trim(plotfile)//"'"
+        write(3,'(a)') "set datafile separator ';'"
+        write(3,'(a)') ""
+        write(3,'(a)', advance = "no") "set title 'Backflow in jump defect: "
+        write(3,'(a, F4.0, a, F6.1, a, F8.2)') "N = ", N, ", P_{cutoff} = ", P_CUTOFF, ", |{/Symbol a}| = ", abs(ALPHA)
+        write(3,'(a)') "set style line 1 linecolor rgb 'red' linewidth 2"
+        write(3,'(a)') "set style line 2 linecolor rgb 'blue' linewidth 2"
+        write(3,'(a)') "set style line 3 linecolor rgb 'forest-green' linewidth 2"
+        write(3,'(a)') ""
+        write(3,'(a)') "set label ''"
+        write(3,'(a)') "set xlabel 'x_{0}'"
+        write(3,'(a)') "set ylabel '{/Symbol b}_V(f)'"
+        write(3,'(a)') "set key center right"
+        write(3,'(a)') ""
+        write(3,'(a, f6.2, a, f6.2, a)') "set xrange [", X_LOW, ":", X_HIGH, "]"
+        write(3,'(a)') "set yrange [*:0]"
+        write(3,'(a)') ""
+        write(3,'(a)') "plot '"//trim(datafile)//"' using 1:2 with lines ls 1 title '{/Symbol a} < 0', \"
+        write(3,'(a)') "     '"//trim(datafile)//"' using 1:3 with lines ls 2 title '{/Symbol a} > 0'"
+
+        close(3)
+    end subroutine
 end module

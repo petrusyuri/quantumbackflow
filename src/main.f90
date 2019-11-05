@@ -72,8 +72,8 @@ program jump
       MODEL_N          =  200
       MODEL_P_CUTOFF   =  100.0D0
       MODEL_ALPHA      =    0.1D0
-      MODEL_X_LOW      = -  0.5D0
-      MODEL_X_HIGH     =    0.5D0
+      MODEL_X_LOW      = -  0.3D0
+      MODEL_X_HIGH     =    0.3D0
       MODEL_X_STEPS    =    30
       MODEL_FUN_TYPE   =    1
     else
@@ -135,7 +135,8 @@ program jump
 
     interval = (MODEL_X_HIGH - (MODEL_X_LOW)) / MODEL_X_STEPS
 
-    call JumpModel(MODEL_N, MODEL_P_CUTOFF, MODEL_FUN_TYPE)
+    call JumpModel(MODEL_N, MODEL_P_CUTOFF, MODEL_ALPHA, MODEL_FUN_TYPE)
+    call GeneratePlotFile(gpltfile, datafile, plotfile, MODEL_X_LOW, MODEL_X_HIGH)
 
     write(*,'(a,F12.4)') "backflow1 (bf1): MODEL_ALPHA = ", - MODEL_ALPHA
     write(*,'(a,F12.4)') "backflow2 (bf2): MODEL_ALPHA = ", MODEL_ALPHA
@@ -195,35 +196,11 @@ program jump
         write(1, fmt = '(F15.12)') w(1)
         write(2, fmt = '(F15.12)') w(1)
 
+        call system("gnuplot -p "//trim(gpltfile))
+
     end do
-
-    open(3, file = gpltfile, status = 'new')
-
-    write(3,'(a)') "set encoding utf8"
-    write(3,'(a)') "set terminal png size 960, 720 enhanced"
-    write(3,'(a)') "set output '"//trim(plotfile)//"'"
-    write(3,'(a)') "set datafile separator ';'"
-    write(3,'(a)') ""
-    write(3,'(a)', advance = "no") "set title 'Backflow in jump defect: "
-    write(3,'(a, i4, a, F6.1, a, F8.2)') "N = ", MODEL_N, ", P_{cutoff} = ", MODEL_P_CUTOFF, ", |{/Symbol a}| = ", MODEL_ALPHA
-    write(3,'(a)') "set style line 1 linecolor rgb 'red' linewidth 2"
-    write(3,'(a)') "set style line 2 linecolor rgb 'blue' linewidth 2"
-    write(3,'(a)') "set style line 3 linecolor rgb 'forest-green' linewidth 2"
-    write(3,'(a)') ""
-    write(3,'(a)') "set label ''"
-    write(3,'(a)') "set xlabel 'x_{0}'"
-    write(3,'(a)') "set ylabel '{/Symbol b}_V(f)'"
-    write(3,'(a)') "set key center right"
-    write(3,'(a)') ""
-    write(3,'(a)') "set yrange [*:0]"
-    write(3,'(a)') ""
-    write(3,'(a)') "plot '"//trim(datafile)//"' using 1:2 with lines ls 1 title '{/Symbol a} < 0', \"
-    write(3,'(a)') "     '"//trim(datafile)//"' using 1:3 with lines ls 2 title '{/Symbol a} > 0'"
 
     close(1)
     close(2)
-    close(3)
-
-    call system("gnuplot -p "//trim(gpltfile))
 
 end program

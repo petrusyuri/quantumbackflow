@@ -254,7 +254,7 @@ contains
         write(3,'(a)') "set datafile separator ';'"
         write(3,'(a)') ""
         write(3,'(a)', advance = "no") "set title 'Backflow in jump defect: "
-        write(3,'(a, F4.0, a, F6.1, a, F8.2)') "N = ", N, ", P_{cutoff} = ", P_CUTOFF, ", |{/Symbol a}| = ", abs(ALPHA)
+        write(3,'(a, i4, a, i4, a, F8.2)') "N = ", int(N), ", P_{cutoff} = ", int(P_CUTOFF), ", |{/Symbol a}| = ", abs(ALPHA)
         write(3,'(a)') "set style line 1 linecolor rgb 'red' linewidth 2"
         write(3,'(a)') "set style line 2 linecolor rgb 'blue' linewidth 2"
         write(3,'(a)') "set style line 3 linecolor rgb 'forest-green' linewidth 2"

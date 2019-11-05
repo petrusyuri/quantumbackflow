@@ -31,24 +31,16 @@ program jump
 
     character(8)  :: date
     character(10) :: time
-    character(21) :: datetime
 
+    character(255) :: datetime
     character(255) :: logfile
     character(255) :: datafile
     character(255) :: gpltfile
     character(255) :: plotfile
     character(255) :: cwd
-
-    call date_and_time(date = date, time = time)
-    call getcwd(cwd)
-
-    datetime = date(1:4)//"-"//date(5:6)//"-"//date(7:8)
-    datetime = trim(datetime)//"_("//time(1:2)//"-"//time(3:4)//"-"//time(5:6)//")"
-
-    logfile  = trim(cwd)//"\out\log_"//trim(datetime)//".txt"
-    datafile = trim(cwd)//"\out\data_"//trim(datetime)//".csv"
-    gpltfile = trim(cwd)//"\out\gplt_"//trim(datetime)//".plt"
-    plotfile = trim(cwd)//"\out\plot_"//trim(datetime)//".png"
+    character(255) :: n_char
+    character(255) :: p_char
+    character(255) :: alpha_char
 
     write(*,'(a)') "********************"
     write(*,'(a)') "JUMP MODEL TEST"
@@ -91,6 +83,20 @@ program jump
         read(args(6), *) MODEL_X_STEPS
         read(args(7), *) MODEL_FUN_TYPE
     end if
+
+    write(n_char, '(i4.4)') MODEL_N
+    write(p_char, '(i4.4)') int(MODEL_P_CUTOFF)
+
+    call date_and_time(date = date, time = time)
+    call getcwd(cwd)
+
+    datetime = date(1:4)//"-"//date(5:6)//"-"//date(7:8)
+    datetime = trim(datetime)//"_("//time(1:2)//"-"//time(3:4)//"-"//time(5:6)//")"
+
+    logfile  = trim(cwd)//"\out\log_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".txt"
+    datafile = trim(cwd)//"\out\data_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".csv"
+    gpltfile = trim(cwd)//"\out\gplt_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".plt"
+    plotfile = trim(cwd)//"\out\plot_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".png"
 
     open(1, file = logfile, status = 'new')
     open(2, file = datafile, status = 'new')

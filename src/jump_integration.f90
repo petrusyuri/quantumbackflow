@@ -1,7 +1,6 @@
 module jump_integration
 
     use quadpack_double
-    use omp_lib
 
     implicit none
 
@@ -15,14 +14,18 @@ module jump_integration
 
 contains
 
-    subroutine JumpModel(N_in, P_CUTOFF_in, ALPHA_in, FUN_TYPE_in)
+    subroutine JumpModel(N_in, P_CUTOFF_in, FUN_TYPE_in)
         integer (kind = 4) N_in, FUN_TYPE_in
-        real (kind = 8) P_CUTOFF_in, ALPHA_in
+        real (kind = 8) P_CUTOFF_in
 
         N = REAL(N_in, kind = 8)
         P_CUTOFF = P_CUTOFF_in
-        ALPHA = ALPHA_in
         FUN_TYPE = FUN_TYPE_in
+    end subroutine
+
+    subroutine SetAlpha(ALPHA_in)
+        real (kind = 8) ALPHA_in
+        ALPHA = ALPHA_in
     end subroutine
 
     subroutine GaussianCurrentKernel(sigma_in, x0_in)
@@ -35,7 +38,7 @@ contains
     end subroutine
 
     function BasisMatrixElement(i, j)
-        integer i, j, aux
+        integer i, j
         real (kind = 8) step, p, q
         complex (kind = 8) BasisMatrixElement
 
@@ -73,30 +76,30 @@ contains
         real (kind = 8) k, x
         complex (kind = 8) phi, incomingWave, reflectWave, transmitWave
 
-		if (x < 0) then
+        if (x < 0) then
             incomingWave = EXP(DCMPLX(0, k*x))
             reflectWave  = CONJG(incomingWave)
-			phi = reflectWave*reflect(k) + incomingWave
-		else
-			transmitWave = EXP(DCMPLX(0, k*x))
-			phi = transmitWave*transmit(k)
-		end if
-		return
+            phi = reflectWave*reflect(k) + incomingWave
+        else
+            transmitWave = EXP(DCMPLX(0, k*x))
+            phi = transmitWave*transmit(k)
+        end if
+        return
     end function
 
     function phiDeriv(k, x)
         real (kind = 8) k, x
         complex (kind = 8) phiDeriv, incomingWave, reflectWave, transmitWave
 
-		if (x < 0) then
+        if (x < 0) then
             incomingWave = EXP(DCMPLX(0, k*x)) * DCMPLX(0, k)
-			reflectWave  = CONJG(incomingWave)
-			phiDeriv = reflectWave*reflect(k) + incomingWave
-		else
-			transmitWave = EXP(DCMPLX(0, k*x)) * DCMPLX(0, k)
-			phiDeriv = transmitWave*transmit(k)
-		end if
-		return
+            reflectWave  = CONJG(incomingWave)
+            phiDeriv = reflectWave*reflect(k) + incomingWave
+        else
+            transmitWave = EXP(DCMPLX(0, k*x)) * DCMPLX(0, k)
+            phiDeriv = transmitWave*transmit(k)
+        end if
+        return
     end function
 
     ! -------------------------------
@@ -109,12 +112,12 @@ contains
 
         psi1  = CONJG(phi(k1, x))
 
-    	psi2  = phi(k2, x)
-    	psiD1 = CONJG(phiDeriv(k1, x))
-    	psiD2 = phiDeriv(k2, x)
-    	psiDiff = psiD1*psi2 - psi1*psiD2
+        psi2  = phi(k2, x)
+        psiD1 = CONJG(phiDeriv(k1, x))
+        psiD2 = phiDeriv(k2, x)
+        psiDiff = psiD1*psi2 - psi1*psiD2
 
-    	currentKernel = DCMPLX(0, 0.25D0/PI) * psiDiff
+        currentKernel = DCMPLX(0, 0.25D0/PI) * psiDiff
         return
     end function
 
@@ -198,11 +201,9 @@ contains
         real ( kind = 8 ), parameter :: epsabs = 1.0D-10
         real ( kind = 8 ), parameter :: epsrel = 1.0D-10
         integer ( kind = 4 ) ier
-        integer ( kind = 4 ) iwork(limit)
         integer ( kind = 4 ), parameter :: key = 6
         integer ( kind = 4 ) last
         integer ( kind = 4 ) neval
-        real ( kind = 8 ) work(lenw)
 
         integer ( kind = 4 ), parameter :: npts2 = 3
         real (kind = 8), dimension(npts2) :: points, pts

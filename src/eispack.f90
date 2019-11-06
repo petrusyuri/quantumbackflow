@@ -1422,7 +1422,7 @@ subroutine bisect ( n, eps1, d, e, e2, t1, t2, mm, m, w, ind, ierr )
   real ( kind = 8 ) rv4(n)
   real ( kind = 8 ) rv5(n)
   integer ( kind = 4 ) s
-  integer ( kind = 4 ) sturm_sequence
+  !integer ( kind = 4 ) sturm_sequence
   real ( kind = 8 ) t1
   real ( kind = 8 ) t2
   integer ( kind = 4 ) tag

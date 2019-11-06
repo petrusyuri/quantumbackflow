@@ -95,12 +95,16 @@ program jump
     datetime = date(1:4)//"_"//date(5:6)//"_"//date(7:8)
     datetime = trim(datetime)//"__"//time(1:2)//"_"//time(3:4)//"_"//time(5:6)
     datetime = trim(datetime)//"__N_"//trim(n_char)//"__P_"//trim(p_char)//"__A_"//trim(a_char)
+    
+    #ifdef __unix__
+    print*, "UNIX"
+    #endif
 
-    logfile  = trim(cwd)//"\out\log__"//trim(datetime)//".txt"
-    datafile = trim(cwd)//"\out\data__"//trim(datetime)//".csv"
-    gpltfile = trim(cwd)//"\out\gplt__"//trim(datetime)//".plt"
-    plotfile = trim(cwd)//"\out\plot__"//trim(datetime)//".png"
-    mlabfile = trim(cwd)//"\out\mlab__"//trim(datetime)//".m"
+    logfile  = trim(cwd)//"/out/log__"//trim(datetime)//".txt"
+    datafile = trim(cwd)//"/out/data__"//trim(datetime)//".csv"
+    gpltfile = trim(cwd)//"/out/gplt__"//trim(datetime)//".plt"
+    plotfile = trim(cwd)//"/out/plot__"//trim(datetime)//".png"
+    mlabfile = trim(cwd)//"/out/mlab__"//trim(datetime)//".m"
 
     open(1, file = logfile, status = 'new')
     open(2, file = datafile, status = 'new')

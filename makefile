@@ -17,16 +17,12 @@ OBJECTS  := $(SOURCES:$(SRCDIR)/%.f90=%.o)
 rm       = rm -f
 
 $(TARGET): $(OBJECTS)
-	@$(FC) $(OBJECTS) $(FCFLAGS) -o $@
-	@echo "Complete!"
+	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+	@echo "Linking complete!"
 
-#$(TARGET): $(OBJECTS)
-#	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
-#	@echo "Linking complete!"
-
-#$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
-#	@$(CC) $(CFLAGS) -c $< -o $@
-#	@echo "Compiled "$<" successfully!"
+$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
+	@$(FC) $(FCFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
 
 clean:
 	@$(rm) $(OBJECTS)

@@ -5283,13 +5283,13 @@ contains
       implicit none
 
       real ( kind = 8 ) a,abserr,ak22,amom0,amom1,amom2,b,c,cc,centr, &
-        cheb12,cheb24,dqwgtc,f,fval,hlgth,p2,p3,p4,resabs, &
+        cheb12,cheb24,f,fval,hlgth,p2,p3,p4,resabs, &
         resasc,result,res12,res24,u,x
       integer ( kind = 4 ) i,isym,k,kp,krul,neval
       dimension x(11),fval(25),cheb12(13),cheb24(25)
 
       external f
-      external dqwgtc
+      !external dqwgtc
 
       data x(1) / 0.991444861373810411144557526928563d0 /
       data x(2) / 0.965925826289068286749743199728897d0 /
@@ -5495,7 +5495,7 @@ contains
       implicit none
 
       real ( kind = 8 ) a,abserr,ac,an,an2,as,asap,ass,b,centr,chebmo, &
-        cheb12,cheb24,conc,cons,cospar,d,dqwgtf,d1, &
+        cheb12,cheb24,conc,cons,cospar,d,d1, &
         d2,estc,ests,f,fval,hlgth,oflow,omega,parint,par2,par22, &
         p2,p3,p4,resabs,resasc,resc12,resc24,ress12,ress24,result, &
         sinpar,v,x
@@ -5504,7 +5504,7 @@ contains
       dimension chebmo(maxp1,25),cheb12(13),cheb24(25),d(25),d1(25), &
         d2(25),fval(25),v(28),x(11)
 
-      external f,dqwgtf
+      external f!,dqwgtf
 
       data x(1) / 0.991444861373810411144557526928563d0 /
       data x(2) / 0.965925826289068286749743199728897d0 /
@@ -5825,13 +5825,13 @@ contains
 
       real ( kind = 8 ) a,abserr,alfa,b,beta,bl,br,centr,cheb12,cheb24, &
         dc,f,factor,fix,fval,hlgth,resabs,resasc,result,res12, &
-        res24,rg,rh,ri,rj,u,dqwgts,x
+        res24,rg,rh,ri,rj,u,x
       integer ( kind = 4 ) i,integr,isym,nev
 
       dimension cheb12(13),cheb24(25),fval(25),rg(25),rh(25),ri(25), &
         rj(25),x(11)
 
-      external f,dqwgts
+      external f!,dqwgts
 
       data x(1) / 0.991444861373810411144557526928563d0 /
       data x(2) / 0.965925826289068286749743199728897d0 /
@@ -8728,7 +8728,7 @@ contains
     !
       implicit none
 
-      real dqwgts
+      real ( kind = 8 ) dqwgts
       real ( kind = 8 ) a,alfa,b,beta,bmx,x,xma
       integer ( kind = 4 ) integr
 
@@ -8849,4 +8849,3 @@ contains
       return
     end
 end module
-

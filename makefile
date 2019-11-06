@@ -6,6 +6,7 @@ OBJDIR = ./obj/
 # Find all source files, create a list of corresponding object files
 SRCS = $(wildcard $(SRCDIR)*.f90)
 OBJS = $(patsubst %.f90, %.o, $(patsubst $(SRCDIR), $(OBJDIR), $(SRCS)))
+MODS = $(patsubst %.f90, %.mod, $(patsubst $(SRCDIR), $(MODDIR), $(SRCS)))
 
 # Compiler/Linker settings
 FC      = gfortran

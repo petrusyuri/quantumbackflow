@@ -11,7 +11,7 @@ PROGRAM = quantumbackflow
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90
-	$(FC) $(FCFLAGS) -o $@ $<
+	$(FC) $(FCFLAGS) -c -o $@ $<
 
 # Linker
 $(PROGRAM) : $(OBJS)

@@ -21,7 +21,7 @@ $(TARGET): $(OBJECTS)
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
-	@$(FC) $(FCFLAGS) -c $< -o $@
+	@$(CC) $(FCFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
 clean:

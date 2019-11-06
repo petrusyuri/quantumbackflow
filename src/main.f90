@@ -212,7 +212,7 @@ program jump
         write(2, fmt = '(F15.12)') w(1)
         write(4, fmt = '(F15.12 a)') w(1), ";"
 
-        !call system("gnuplot -p "//trim(gpltfile))
+        call system("gnuplot -p "//trim(gpltfile))
 
     end do
 

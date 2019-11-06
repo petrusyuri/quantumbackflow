@@ -2,6 +2,7 @@
 SRCDIR = ./src/
 MODDIR = ./mod/
 OBJDIR = ./obj/
+OUTDIR = ./out/
 
 # Find all source files, create a list of corresponding object files
 SRCS = $(wildcard $(SRCDIR)*.f90)
@@ -15,7 +16,7 @@ FLFLAGS =
 
 PROGRAM = backflow
 
-all: $(PROGRAM)
+all: prep $(PROGRAM)
 
 # Compiler steps for all objects
 $(OBJS) : $(OBJDIR)%.o : $(SRCDIR)%.f90
@@ -24,7 +25,12 @@ $(OBJS) : $(OBJDIR)%.o : $(SRCDIR)%.f90
 # Linker
 $(PROGRAM) : $(OBJS)
 	$(FC) $(FLFLAGS) -o $@ $^
-	
+
+prep:
+	mkdir -p $(MODDIR)
+	mkdir -p $(OBJDIR)
+	mkdir -p $(OUTDIR)
+
 clean:
 	rm -rf $(MODS) $(OBJS)
 

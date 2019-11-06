@@ -41,7 +41,7 @@ program jump
     character(255) :: cwd
     character(255) :: n_char
     character(255) :: p_char
-    character(255) :: alpha_char
+    character(255) :: a_char
 
     write(*,'(a)') "********************"
     write(*,'(a)') "JUMP MODEL TEST"
@@ -85,20 +85,22 @@ program jump
         read(args(7), *) MODEL_FUN_TYPE
     end if
 
-    write(n_char, '(i4.4)') MODEL_N
-    write(p_char, '(i4.4)') int(MODEL_P_CUTOFF)
+    write(n_char, '(i0)') MODEL_N
+    write(p_char, '(i0)') int(MODEL_P_CUTOFF)
+    write(a_char, '(i0)') int(1000*MODEL_ALPHA)
 
     call date_and_time(date = date, time = time)
     call getcwd(cwd)
 
-    datetime = date(1:4)//"-"//date(5:6)//"-"//date(7:8)
-    datetime = trim(datetime)//"_("//time(1:2)//"-"//time(3:4)//"-"//time(5:6)//")"
+    datetime = date(1:4)//"_"//date(5:6)//"_"//date(7:8)
+    datetime = trim(datetime)//"__"//time(1:2)//"_"//time(3:4)//"_"//time(5:6)
+    datetime = trim(datetime)//"__N_"//trim(n_char)//"_P_"//trim(p_char)//"_A_"//trim(a_char)
 
-    logfile  = trim(cwd)//"\out\log_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".txt"
-    datafile = trim(cwd)//"\out\data_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".csv"
-    gpltfile = trim(cwd)//"\out\gplt_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".plt"
-    plotfile = trim(cwd)//"\out\plot_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".png"
-    mlabfile = trim(cwd)//"\out\mlab_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".txt"
+    logfile  = trim(cwd)//"/out/log__"//trim(datetime)//".txt"
+    datafile = trim(cwd)//"/out/data__"//trim(datetime)//".csv"
+    gpltfile = trim(cwd)//"/out/gplt__"//trim(datetime)//".plt"
+    plotfile = trim(cwd)//"/out/plot__"//trim(datetime)//".png"
+    mlabfile = trim(cwd)//"/out/mlab__"//trim(datetime)//".m"
 
     open(1, file = logfile, status = 'new')
     open(2, file = datafile, status = 'new')

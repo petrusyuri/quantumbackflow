@@ -19,9 +19,12 @@ $(OBJS) : %.o : %.f90
 $(PROGRAM) : $(OBJS)
 	$(FC) $(FLFLAGS) -o $@ $^
 
-#clean:
-#	rm -f *.o *.mod
-#	@echo "Cleanup complete!"
+clean:
+	rm -f *.o *.mod
+	@echo "Cleanup complete!"
+	
+clean:
+	rm -rf *.mod $(OBJS)
 
 # Dependencies
 

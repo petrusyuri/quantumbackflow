@@ -7,7 +7,7 @@ FC      = gfortran
 FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s
 FLFLAGS = 
 
-PROGRAM = backflow
+PROGRAM = main
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90

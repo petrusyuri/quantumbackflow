@@ -27,5 +27,5 @@ $(PROGRAM) : $(OBJS)
 
 # Dependencies
 
-jump_integration.o : quadpack_double.o
-main.o: jump_integration.o eispack.o
+#jump_integration.o : quadpack_double.o
+#main.o: jump_integration.o eispack.o

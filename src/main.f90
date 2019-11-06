@@ -99,7 +99,7 @@ program jump
     logfile  = trim(cwd)//"/out/log__"//trim(datetime)//".txt"
     datafile = trim(cwd)//"/out/data__"//trim(datetime)//".csv"
     gpltfile = trim(cwd)//"/out/gplt__"//trim(datetime)//".plt"
-    plotfile = trim(cwd)//"/out/plot__"//trim(datetime)//".png"
+    plotfile = trim(cwd)//"/out/plot__"//trim(datetime)//".pdf"
     mlabfile = trim(cwd)//"/out/mlab__"//trim(datetime)//".m"
 
     open(1, file = logfile, status = 'new')

@@ -42,10 +42,6 @@ program jump
     character(255) :: n_char
     character(255) :: p_char
     character(255) :: a_char
-    
-    write(*,'(a)') "TESTE DE MUDANÇA"
-    
-    pause
 
     write(*,'(a)') "********************"
     write(*,'(a)') "JUMP MODEL TEST"

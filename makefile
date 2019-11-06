@@ -13,7 +13,7 @@ LFLAGS   =
 SRCDIR   = src
 
 SOURCES  := $(wildcard $(SRCDIR)/*.f90)
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.f90=$%.o)
+OBJECTS  := $(SOURCES:$(SRCDIR)/%.f90=%.o)
 rm       = rm -f
 
 $(TARGET): $(OBJECTS)

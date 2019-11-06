@@ -19,13 +19,13 @@ rm       = rm -f
 
 
 $(TARGET): $(OBJECTS)
-    @$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
-    @echo "Linking complete!"
+	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
-    @$(CC) $(CFLAGS) -c $< -o $@
-    @echo "Compiled "$<" successfully!"
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
 
 clean:
-    @$(rm) $(OBJECTS)
-    @echo "Cleanup complete!"
+	@$(rm) $(OBJECTS)
+	@echo "Cleanup complete!"

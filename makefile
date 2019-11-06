@@ -7,7 +7,9 @@ FC      = gfortran
 FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s
 FLFLAGS = 
 
-PROGRAM = main
+PROGRAM = backflow
+
+all: $(PROGRAM)
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90
@@ -23,5 +25,5 @@ $(PROGRAM) : $(OBJS)
 
 # Dependencies
 
-#jump_integration.o : quadpack_double.o
-#main.o: jump_integration.o eispack.o
+jump_integration.o : quadpack_double.o
+main.o: jump_integration.o eispack.o

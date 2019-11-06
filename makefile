@@ -11,11 +11,11 @@ PROGRAM = quantumbackflow
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90
-    $(FC) $(FCFLAGS) -o $@ $<
+	$(FC) $(FCFLAGS) -o $@ $<
 
 # Linker
 $(PROGRAM) : $(OBJS)
-    $(FC) $(FLFLAGS) -o $@ $^
+	$(FC) $(FLFLAGS) -o $@ $^
 
 clean:
 	rm -f *.o *.mod

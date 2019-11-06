@@ -11,14 +11,14 @@ DEPS = src/quadpack_double.f90 src/eispack.f90 src/jump_integration.f90
 #objects
 OBJ = quadpack_double.o eispack.o jump_integration.o main.o
 
-#compiling dependencies
-%.o: %.f90 $(DEPS)
-	$(FC) -c -o $@ $< $(FCFLAGS)
-
 #compiling project
 $(TARGET): $(OBJ)
 	$(FC) -o $@ $^ $(FCFLAGS)
 	@echo "Compiled "$<" successfully!"
+
+#compiling dependencies
+%.o: %.f90 $(DEPS)
+	$(FC) -c -o $@ $< $(FCFLAGS)
 
 clean:
 	rm -f *.o *.mod

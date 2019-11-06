@@ -1,25 +1,31 @@
-# compiler
-FC = gfortran
+# project name (generate executable with this name)
+TARGET   = quantumbackflow
 
-# compile flags
-FCFLAGS = -Wall -O3 -ffast-math -fexpensive-optimizations -flto -s
+FC       = gfortran
+# compiling flags here
+FCFLAGS   = -Wall -O3 -ffast-math -fexpensive-optimizations -flto -s
 
-# link flags
-FLFLAGS =
+LINKER   = gfortran
+# linking flags here
+LFLAGS   =
 
-# source files and objects
-SRCS = $(patsubst %.F, %.o, $(wildcard *.F))
+# change these to proper directories where each file should be
+SRCDIR   = src
+OBJDIR   = obj
 
-# program name
-PROGRAM = backflow
+SOURCES  := $(wildcard $(SRCDIR)/*.f90)
+OBJECTS  := $(SOURCES:$(SRCDIR)/%.f90=$(OBJDIR)/%.o)
+rm       = rm -f
 
-all: $(PROGRAM)
 
-$(PROGRAM): $(SRCS)
-    $(FC) $(FLFLAGS) -o $@ $<
+$(TARGET): $(OBJECTS)
+    @$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+    @echo "Linking complete!"
 
-%.o: %.F
-    $(FC) $(FCFLAGS) -o $@ $<
+$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
+    @$(CC) $(CFLAGS) -c $< -o $@
+    @echo "Compiled "$<" successfully!"
 
 clean:
-    rm -f *.o *.mod
+    @$(rm) $(OBJECTS)
+    @echo "Cleanup complete!"

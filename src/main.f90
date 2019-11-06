@@ -37,10 +37,11 @@ program jump
     character(255) :: datafile
     character(255) :: gpltfile
     character(255) :: plotfile
+    character(255) :: mlabfile
     character(255) :: cwd
     character(255) :: n_char
     character(255) :: p_char
-    character(255) :: alpha_char
+    character(255) :: a_char
 
     write(*,'(a)') "********************"
     write(*,'(a)') "JUMP MODEL TEST"
@@ -61,12 +62,12 @@ program jump
       write(*,*) "Using default parameters"
       write(*,*) ""
 
-      MODEL_N          =  200
-      MODEL_P_CUTOFF   =  100.0D0
+      MODEL_N          =  150
+      MODEL_P_CUTOFF   =   50.0D0
       MODEL_ALPHA      =    0.1D0
       MODEL_X_LOW      = -  0.3D0
       MODEL_X_HIGH     =    0.3D0
-      MODEL_X_STEPS    =    30
+      MODEL_X_STEPS    =    5
       MODEL_FUN_TYPE   =    1
     else
         ! If we got the right number of arguments, put them into an array of characters
@@ -84,22 +85,26 @@ program jump
         read(args(7), *) MODEL_FUN_TYPE
     end if
 
-    write(n_char, '(i4.4)') MODEL_N
-    write(p_char, '(i4.4)') int(MODEL_P_CUTOFF)
+    write(n_char, '(i0)') MODEL_N
+    write(p_char, '(i0)') int(MODEL_P_CUTOFF)
+    write(a_char, '(i0)') int(1000*MODEL_ALPHA)
 
     call date_and_time(date = date, time = time)
     call getcwd(cwd)
 
-    datetime = date(1:4)//"-"//date(5:6)//"-"//date(7:8)
-    datetime = trim(datetime)//"_("//time(1:2)//"-"//time(3:4)//"-"//time(5:6)//")"
+    datetime = date(1:4)//"_"//date(5:6)//"_"//date(7:8)
+    datetime = trim(datetime)//"__"//time(1:2)//"_"//time(3:4)//"_"//time(5:6)
+    datetime = trim(datetime)//"__N_"//trim(n_char)//"__P_"//trim(p_char)//"__A_"//trim(a_char)
 
-    logfile  = trim(cwd)//"\out\log_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".txt"
-    datafile = trim(cwd)//"\out\data_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".csv"
-    gpltfile = trim(cwd)//"\out\gplt_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".plt"
-    plotfile = trim(cwd)//"\out\plot_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".png"
+    logfile  = trim(cwd)//"\out\log__"//trim(datetime)//".txt"
+    datafile = trim(cwd)//"\out\data__"//trim(datetime)//".csv"
+    gpltfile = trim(cwd)//"\out\gplt__"//trim(datetime)//".plt"
+    plotfile = trim(cwd)//"\out\plot__"//trim(datetime)//".png"
+    mlabfile = trim(cwd)//"\out\mlab__"//trim(datetime)//".m"
 
     open(1, file = logfile, status = 'new')
     open(2, file = datafile, status = 'new')
+    open(4, file = mlabfile, status = 'new')
 
     ! Write some information about the parameters being used this run
     write(*,'(a)') "********************"
@@ -152,6 +157,8 @@ program jump
     write(1,'(a,F12.4)') "backflow2 (bf2): MODEL_ALPHA = ", MODEL_ALPHA
     write(1,*) ""
 
+    write(4,'(a)') "POINTS = ["
+
 
     do test = 0, MODEL_X_STEPS
         x_test = MODEL_X_LOW + test*interval
@@ -159,6 +166,7 @@ program jump
         write(*, fmt = '(A, F6.2, A)', advance = "no") "x = ", x_test, ", bf1 = "
         write(1, fmt = '(A, F6.2, A)', advance = "no") "x = ", x_test, ", bf1 = "
         write(2, fmt = '(F6.2, A)', advance = "no") x_test, "; "
+        write(4, fmt = '(F6.2, A)', advance = "no") x_test, ", "
 
         call SetAlpha(- MODEL_ALPHA)
 
@@ -180,6 +188,7 @@ program jump
         write(*, fmt = '(F15.12, A)', advance = "no") w(1), ", bf2 = "
         write(1, fmt = '(F15.12, A)', advance = "no") w(1), ", bf2 = "
         write(2, fmt = '(F15.12, A)', advance = "no") w(1), "; "
+        write(4, fmt = '(F15.12, A)', advance = "no") w(1), ", "
 
         call SetAlpha(MODEL_ALPHA)
 
@@ -201,12 +210,18 @@ program jump
         write(*, fmt = '(F15.12)') w(1)
         write(1, fmt = '(F15.12)') w(1)
         write(2, fmt = '(F15.12)') w(1)
+        write(4, fmt = '(F15.12 a)') w(1), ";"
 
-        call system("gnuplot -p "//trim(gpltfile))
+        !call system("gnuplot -p "//trim(gpltfile))
 
     end do
 
+    write(4, fmt = '(a)') "];"
+    write(4, fmt = '(a)') ""
+    write(4, fmt = '(a)') "plot(POINTS(:,1), POINTS(:,2:3));"
+
     close(1)
     close(2)
+    close(4)
 
 end program

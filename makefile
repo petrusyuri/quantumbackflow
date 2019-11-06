@@ -9,7 +9,7 @@ OBJS = $(patsubst %.f90, %.o, $(patsubst $(SRCDIR), $(OBJDIR), $(SRCS)))
 
 # Compiler/Linker settings
 FC      = gfortran
-FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s -JDir $(MODDIR)
+FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s -J $(MODDIR)
 FLFLAGS = 
 
 PROGRAM = backflow

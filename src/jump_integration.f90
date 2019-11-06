@@ -249,12 +249,12 @@ contains
         open(3, file = gpltfile, status = 'new')
 
         write(3,'(a)') "set encoding utf8"
-        write(3,'(a)') "set terminal pdf size 4.0,3.0 enhanced"
+        write(3,'(a)') "set terminal pdf size 16.0,9.0 enhanced"
         write(3,'(a)') "set output '"//trim(plotfile)//"'"
         write(3,'(a)') "set datafile separator ';'"
         write(3,'(a)') ""
         write(3,'(a)', advance = "no") "set title 'Backflow in jump defect: "
-        write(3,'(a, i4, a, i4, a, F8.2)') "N = ", int(N), ", P_{cutoff} = ", int(P_CUTOFF), ", |α| = ", abs(ALPHA)
+        write(3,'(a, i0, a, i0, a, F0.2)') "N = ", int(N), ", P_{cutoff} = ", int(P_CUTOFF), ", |α| = ", abs(ALPHA)
         write(3,'(a)') "set style line 1 linecolor rgb 'red' linewidth 2"
         write(3,'(a)') "set style line 2 linecolor rgb 'blue' linewidth 2"
         write(3,'(a)') "set style line 3 linecolor rgb 'forest-green' linewidth 2"

@@ -26,7 +26,7 @@ $(PROGRAM) : $(OBJS)
 	$(FC) $(FLFLAGS) -o $@ $^
 	
 clean:
-	rm -rf *.mod $(OBJS)
+	rm -rf $(MODS) $(OBJS)
 
 # Dependencies
 

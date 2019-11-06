@@ -1,275 +1,225 @@
-module jump_integration
+program jump
 
-    use quadpack_double
+    use jump_integration
+    use eispack
 
     implicit none
 
-    real (kind = 8) N, P_CUTOFF, ALPHA
-    real (kind = 8) kernel_p, kernel_q
+    real (kind = 8) interval, x_test
+    integer (kind = 4) row, col, test
 
-    real (kind = 8), parameter :: PI = 4.D0 * DATAN(1.D0)
-    real (kind = 8) x0, sigma
+    real (kind = 8), dimension(:, :), allocatable :: realMatrix, imagMatrix
 
-    integer (kind = 4) FUN_TYPE
+    real (kind = 8), dimension(:), allocatable :: w
+    real (kind = 8), dimension(:, :), allocatable :: zi, zr
 
-contains
+    integer ( kind = 4 ) ierr
+    real (kind = 8), dimension(:), allocatable ::  points
 
-    subroutine JumpModel(N_in, P_CUTOFF_in, ALPHA_in, FUN_TYPE_in)
-        integer (kind = 4) N_in, FUN_TYPE_in
-        real (kind = 8) P_CUTOFF_in, ALPHA_in
+    complex (kind = 8) tempVar
 
-        N = REAL(N_in, kind = 8)
-        P_CUTOFF = P_CUTOFF_in
-        ALPHA    = ALPHA_in
-        FUN_TYPE = FUN_TYPE_in
-    end subroutine
+    integer         :: MODEL_N
+    real(kind = 8)  :: MODEL_P_CUTOFF
+    real(kind = 8)  :: MODEL_ALPHA
+    real(kind = 8)  :: MODEL_X_LOW
+    real(kind = 8)  :: MODEL_X_HIGH
+    integer         :: MODEL_X_STEPS
+    integer         :: MODEL_FUN_TYPE
 
-    subroutine SetAlpha(ALPHA_in)
-        real (kind = 8) ALPHA_in
-        ALPHA = ALPHA_in
-    end subroutine
+    integer         :: n_args, iarg
+    character(len=16), dimension(7) :: args
 
-    subroutine GaussianCurrentKernel(sigma_in, x0_in)
-        real (kind = 8) sigma_in, x0_in
+    character(8)  :: date
+    character(10) :: time
 
-        sigma = sigma_in
-        x0 = x0_in
+    character(255) :: datetime
+    character(255) :: logfile
+    character(255) :: datafile
+    character(255) :: gpltfile
+    character(255) :: plotfile
+    character(255) :: mlabfile
+    character(255) :: cwd
+    character(255) :: n_char
+    character(255) :: p_char
+    character(255) :: alpha_char
 
-        return
-    end subroutine
+    write(*,'(a)') "********************"
+    write(*,'(a)') "JUMP MODEL TEST"
+    write(*,'(a)') "********************"
+    write(*,*) ""
 
-    function BasisMatrixElement(i, j)
-        integer i, j
-        real (kind = 8) step, p, q
-        complex (kind = 8) BasisMatrixElement
+    ! Find out how many arguments have been provided. If it's not 7, warning
+    n_args = command_argument_count()
+    if (n_args /= 7) then
+      write(*,'(a,I3)') "WARNING: Expected 7 arguments, but got", n_args
+      write(*,*) ""
+      write(*,*) "Usage:"
+      write(*,*) "  ./backflow <n> <p_cutoff> <alpha> <x_low> <x_high> <x_steps> <fun_type>"
+      write(*,*) ""
+      write(*,*) "Example:"
+      write(*,*) "  ./backflow 1000 200.0 0.1 -1.0 1.0 100 1"
+      write(*,*) ""
+      write(*,*) "Using default parameters"
+      write(*,*) ""
 
-        step = P_CUTOFF / N
+      MODEL_N          =  150
+      MODEL_P_CUTOFF   =   50.0D0
+      MODEL_ALPHA      =    0.1D0
+      MODEL_X_LOW      = -  0.3D0
+      MODEL_X_HIGH     =    0.3D0
+      MODEL_X_STEPS    =    5
+      MODEL_FUN_TYPE   =    1
+    else
+        ! If we got the right number of arguments, put them into an array of characters
+        do iarg=1, n_args
+          call get_command_argument(iarg, args(iarg))
+        end do
 
-        p = step * (i + 0.5)
-        q = step * (j + 0.5)
+        ! Read from the array of arguments into the appropriate variables
+        read(args(1), *) MODEL_N
+        read(args(2), *) MODEL_P_CUTOFF
+        read(args(3), *) MODEL_ALPHA
+        read(args(4), *) MODEL_X_LOW
+        read(args(5), *) MODEL_X_HIGH
+        read(args(6), *) MODEL_X_STEPS
+        read(args(7), *) MODEL_FUN_TYPE
+    end if
 
-        BasisMatrixElement = step * kernelValue(p, q)
-        return
-    end function
+    write(n_char, '(i4.4)') MODEL_N
+    write(p_char, '(i4.4)') int(MODEL_P_CUTOFF)
 
-    ! -------------------------------
-    ! JUMP POTENTIAL MODEL
-    ! -------------------------------
+    call date_and_time(date = date, time = time)
+    call getcwd(cwd)
 
-    function transmit(k)
-        real (kind = 8) k
-        complex (kind = 8) transmit
+    datetime = date(1:4)//"-"//date(5:6)//"-"//date(7:8)
+    datetime = trim(datetime)//"_("//time(1:2)//"-"//time(3:4)//"-"//time(5:6)//")"
 
-        transmit = DCMPLX(k, ALPHA) / DCMPLX(k, -ALPHA)
+    logfile  = trim(cwd)//"\out\log_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".txt"
+    datafile = trim(cwd)//"\out\data_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".csv"
+    gpltfile = trim(cwd)//"\out\gplt_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".plt"
+    plotfile = trim(cwd)//"\out\plot_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".png"
+    mlabfile = trim(cwd)//"\out\mlab_N_"//trim(n_char)//"_P_"//trim(p_char)//"_"//trim(datetime)//".txt"
 
-        return
-    end function
+    open(1, file = logfile, status = 'new')
+    open(2, file = datafile, status = 'new')
+    open(4, file = mlabfile, status = 'new')
 
-    function reflect(k)
-        real (kind = 8) k
-        complex (kind = 8) reflect
+    ! Write some information about the parameters being used this run
+    write(*,'(a)') "********************"
+    write(*,'(a)') ""
+    write(*,'(a)') "Running with parameters:"
+    write(*,'(a,I7)')    "  MODEL_N        = ", MODEL_N
+    write(*,'(a,F12.4)') "  MODEL_P_CUTOFF = ", MODEL_P_CUTOFF
+    write(*,'(a,F12.4)') "  MODEL_ALPHA    = ", MODEL_ALPHA
+    write(*,'(a,F12.4)') "  MODEL_X_LOW    = ", MODEL_X_LOW
+    write(*,'(a,F12.4)') "  MODEL_X_HIGH   = ", MODEL_X_HIGH
+    write(*,'(a,I7)')    "  MODEL_X_STEPS  = ", MODEL_X_STEPS
+    write(*,'(a,I7)')    "  FUN_TYPE       = ", MODEL_FUN_TYPE
+    write(*,'(a)') ""
+    write(*,'(a)') "********************"
+    write(*,*) ""
 
-        reflect = DCMPLX(0*k, 0*k)
-        return
-    end function
+    ! Write some information about the parameters being used this run
+    write(1,'(a)') "********************"
+    write(1,'(a)') ""
+    write(1,'(a)') "Running with parameters:"
+    write(1,'(a,I7)')    "  MODEL_N        = ", MODEL_N
+    write(1,'(a,F12.4)') "  MODEL_P_CUTOFF = ", MODEL_P_CUTOFF
+    write(1,'(a,F12.4)') "  MODEL_ALPHA    = ", MODEL_ALPHA
+    write(1,'(a,F12.4)') "  MODEL_X_LOW    = ", MODEL_X_LOW
+    write(1,'(a,F12.4)') "  MODEL_X_HIGH   = ", MODEL_X_HIGH
+    write(1,'(a,I7)')    "  MODEL_X_STEPS  = ", MODEL_X_STEPS
+    write(1,'(a,I7)')    "  FUN_TYPE       = ", MODEL_FUN_TYPE
+    write(1,'(a)') ""
+    write(1,'(a)') "********************"
+    write(1,*) ""
 
-    function phi(k, x)
-        real (kind = 8) k, x
-        complex (kind = 8) phi, incomingWave, reflectWave, transmitWave
+    allocate(points(MODEL_X_STEPS + 1))
+    allocate(realMatrix(MODEL_N, MODEL_N))
+    allocate(imagMatrix(MODEL_N, MODEL_N))
 
-        if (x < 0) then
-            incomingWave = EXP(DCMPLX(0, k*x))
-            reflectWave  = CONJG(incomingWave)
-            phi = reflectWave*reflect(k) + incomingWave
-        else
-            transmitWave = EXP(DCMPLX(0, k*x))
-            phi = transmitWave*transmit(k)
-        end if
-        return
-    end function
+    allocate(w(MODEL_N))
+    allocate(zi(MODEL_N, MODEL_N))
+    allocate(zr(MODEL_N, MODEL_N))
 
-    function phiDeriv(k, x)
-        real (kind = 8) k, x
-        complex (kind = 8) phiDeriv, incomingWave, reflectWave, transmitWave
+    interval = (MODEL_X_HIGH - (MODEL_X_LOW)) / MODEL_X_STEPS
 
-        if (x < 0) then
-            incomingWave = EXP(DCMPLX(0, k*x)) * DCMPLX(0, k)
-            reflectWave  = CONJG(incomingWave)
-            phiDeriv = reflectWave*reflect(k) + incomingWave
-        else
-            transmitWave = EXP(DCMPLX(0, k*x)) * DCMPLX(0, k)
-            phiDeriv = transmitWave*transmit(k)
-        end if
-        return
-    end function
+    call JumpModel(MODEL_N, MODEL_P_CUTOFF, MODEL_ALPHA, MODEL_FUN_TYPE)
+    call GeneratePlotFile(gpltfile, datafile, plotfile, MODEL_X_LOW, MODEL_X_HIGH)
 
-    ! -------------------------------
-    ! SCATTERING MODEL
-    ! -------------------------------
+    write(*,'(a,F12.4)') "backflow1 (bf1): MODEL_ALPHA = ", - MODEL_ALPHA
+    write(*,'(a,F12.4)') "backflow2 (bf2): MODEL_ALPHA = ", MODEL_ALPHA
+    write(*,*) ""
 
-    function currentKernel(x, k1, k2)
-        real (kind = 8) x, k1, k2
-        complex (kind = 8) currentKernel, psi1, psi2, psiD1, psiD2, psiDiff
+    write(1,'(a,F12.4)') "backflow1 (bf1): MODEL_ALPHA = ", - MODEL_ALPHA
+    write(1,'(a,F12.4)') "backflow2 (bf2): MODEL_ALPHA = ", MODEL_ALPHA
+    write(1,*) ""
 
-        psi1  = CONJG(phi(k1, x))
+    write(4,'(a)') "POINTS = ["
 
-        psi2  = phi(k2, x)
-        psiD1 = CONJG(phiDeriv(k1, x))
-        psiD2 = phiDeriv(k2, x)
-        psiDiff = psiD1*psi2 - psi1*psiD2
 
-        currentKernel = DCMPLX(0, 0.25D0/PI) * psiDiff
-        return
-    end function
+    do test = 0, MODEL_X_STEPS
+        x_test = MODEL_X_LOW + test*interval
 
-    ! -------------------------------
-    ! GAUSSIAN CURRENT KERNEL
-    ! -------------------------------
+        write(*, fmt = '(A, F6.2, A)', advance = "no") "x = ", x_test, ", bf1 = "
+        write(1, fmt = '(A, F6.2, A)', advance = "no") "x = ", x_test, ", bf1 = "
+        write(2, fmt = '(F6.2, A)', advance = "no") x_test, "; "
+        write(4, fmt = '(F6.2, A)', advance = "no") x_test, ", "
 
-    function stepFunction(x)
-        real (kind = 8) stepFunction, x
+        call SetAlpha(- MODEL_ALPHA)
 
-        if (FUN_TYPE .EQ. 1) then
+        call GaussianCurrentKernel(0.1D0, x_test)
 
-            stepFunction = EXP(- (((x - x0)/sigma)**2)/2) / (sigma * SQRT(2*PI))
+        do row = 1, MODEL_N
+            do col = 1, row
+                tempVar = BasisMatrixElement(row - 1, col - 1)
 
-        else if (FUN_TYPE .EQ. 2) then
+                realMatrix(row, col) = DREAL(tempVar)
+                imagMatrix(row, col) = DIMAG(tempVar)
+            end do
 
-            stepFunction = (2*(sigma)**3)*(1/PI)/((x - x0)**2 + sigma**2)**2
+!            print*, "Row = ", row
+        end do
 
-        else if (FUN_TYPE .EQ. 3) then
+        call ch(MODEL_N, realMatrix, imagMatrix, w, .FALSE., zr,zi,ierr)
 
-            if((x < x0 - 0.5) .OR. (x > x0 + 0.5)) then
-                stepFunction = 0
-            else
-                stepFunction = 1
-            end if
-        end if
+        write(*, fmt = '(F15.12, A)', advance = "no") w(1), ", bf2 = "
+        write(1, fmt = '(F15.12, A)', advance = "no") w(1), ", bf2 = "
+        write(2, fmt = '(F15.12, A)', advance = "no") w(1), "; "
+        write(4, fmt = '(F15.12, A)', advance = "no") w(1), ", "
 
-        return
-    end function
+        call SetAlpha(MODEL_ALPHA)
 
-    ! -------------------------------
-    ! SPATIAL CURRENT KERNEL
-    ! -------------------------------
+        call GaussianCurrentKernel(0.1D0, x_test)
 
-    function kernelValue(p, q)
-        real (kind = 8) x_a, x_b
-        real (kind = 8) p, q
-        complex (kind = 8) kernelValue
+        do row = 1, MODEL_N
+            do col = 1, row
+                tempVar = BasisMatrixElement(row - 1, col - 1)
 
-        if (FUN_TYPE .EQ. 1) then
-            x_a = x0 - 8*sigma
-            x_b = x0 + 8*sigma
-        else if (FUN_TYPE .EQ. 2) then
-            x_a = x0 - 8*sigma
-            x_b = x0 + 8*sigma
-        else if (FUN_TYPE .EQ. 3) then
-            x_a = x0 - 0.5
-            x_b = x0 + 0.5
-        end if
+                realMatrix(row, col) = DREAL(tempVar)
+                imagMatrix(row, col) = DIMAG(tempVar)
+            end do
 
-        kernelValue = Integrate(x_a, x_b, p, q)
-        return
-    end function
+!            print*, "Row = ", row
+        end do
 
-    function IntegrandReal(x)
-        real (kind = 8) x, k1, k2, IntegrandReal
+        call ch(MODEL_N, realMatrix, imagMatrix, w, .FALSE., zr,zi,ierr)
 
-        k1 = kernel_p
-        k2 = kernel_q
+        write(*, fmt = '(F15.12)') w(1)
+        write(1, fmt = '(F15.12)') w(1)
+        write(2, fmt = '(F15.12)') w(1)
+        write(4, fmt = '(F15.12 a)') w(1), ";"
 
-        IntegrandReal = stepFunction(x) * DREAL(currentKernel(x, k1, k2))
-        return
-    end function
+        !call system("gnuplot -p "//trim(gpltfile))
 
-    function IntegrandImag(x)
-        real (kind = 8) x, k1, k2, IntegrandImag
+    end do
 
-        k1 = kernel_p
-        k2 = kernel_q
+    write(4, fmt = '(a)') "];"
+    write(4, fmt = '(a)') ""
+    write(4, fmt = '(a)') "plot(POINTS(:,1), POINTS(:,2:3));"
 
-        IntegrandImag = stepFunction(x) * DIMAG(currentKernel(x, k1, k2))
-        return
-    end function
+    close(1)
+    close(2)
+    close(4)
 
-    function Integrate(x_a, x_b, p, q)
-        real ( kind = 8 ) x_a, x_b, p, q, realPart, imagPart
-
-        integer ( kind = 4 ), parameter :: limit = 5000
-        integer ( kind = 4 ), parameter :: lenw = 4 * limit
-        real ( kind = 8 ) abserr
-        real ( kind = 8 ), parameter :: epsabs = 1.0D-10
-        real ( kind = 8 ), parameter :: epsrel = 1.0D-10
-        integer ( kind = 4 ) ier
-        integer ( kind = 4 ), parameter :: key = 6
-        integer ( kind = 4 ) last
-        integer ( kind = 4 ) neval
-
-        integer ( kind = 4 ), parameter :: npts2 = 3
-        real (kind = 8), dimension(npts2) :: points, pts
-        integer (kind = 4), dimension(npts2) :: ndin
-
-        real (kind = 8), dimension(limit) :: alist, blist, rlist, elist
-        integer (kind = 4), dimension(limit) :: level, iord
-
-        complex (kind = 8) Integrate
-
-        kernel_p = p
-        kernel_q = q
-
-        if(x_a * x_b <= 0) then
-            points(1) = 0
-
-            call dqagpe (IntegrandReal, x_a, x_b, npts2, points, epsabs, epsrel, limit, realPart, abserr, neval, ier, &
-            alist,blist,rlist,elist,pts,iord,level,ndin,last)
-
-            call dqagpe (IntegrandImag, x_a, x_b, npts2, points, epsabs, epsrel, limit, imagPart, abserr, neval, ier, &
-            alist,blist,rlist,elist,pts,iord,level,ndin,last)
-        else
-            call dqagpe (IntegrandReal, x_a, x_b, 2, points, epsabs, epsrel, limit, realPart, abserr, neval, ier, &
-            alist,blist,rlist,elist,pts,iord,level,ndin,last)
-
-            call dqagpe (IntegrandImag, x_a, x_b, 2, points, epsabs, epsrel, limit, imagPart, abserr, neval, ier, &
-            alist,blist,rlist,elist,pts,iord,level,ndin,last)
-        end if
-
-        Integrate = DCMPLX(realPart, imagPart)
-        return
-    end function
-
-    ! -------------------------------
-    ! GNUPLOT ROUTINE
-    ! -------------------------------
-
-    subroutine GeneratePlotFile(gpltfile, datafile, plotfile, X_LOW, X_HIGH)
-        character(255) :: gpltfile, datafile, plotfile
-        real(kind = 8)  :: X_LOW, X_HIGH
-
-        open(3, file = gpltfile, status = 'new')
-
-        write(3,'(a)') "set encoding utf8"
-        write(3,'(a)') "set terminal png size 960, 720 enhanced"
-        write(3,'(a)') "set output '"//trim(plotfile)//"'"
-        write(3,'(a)') "set datafile separator ';'"
-        write(3,'(a)') ""
-        write(3,'(a)', advance = "no") "set title 'Backflow in jump defect: "
-        write(3,'(a, i4, a, i4, a, F8.2)') "N = ", int(N), ", P_{cutoff} = ", int(P_CUTOFF), ", |{/Symbol a}| = ", abs(ALPHA)
-        write(3,'(a)') "set style line 1 linecolor rgb 'red' linewidth 2"
-        write(3,'(a)') "set style line 2 linecolor rgb 'blue' linewidth 2"
-        write(3,'(a)') "set style line 3 linecolor rgb 'forest-green' linewidth 2"
-        write(3,'(a)') ""
-        write(3,'(a)') "set label ''"
-        write(3,'(a)') "set xlabel 'x_{0}'"
-        write(3,'(a)') "set ylabel '{/Symbol b}_V(f)'"
-        write(3,'(a)') "set key center right"
-        write(3,'(a)') ""
-        write(3,'(a, f6.2, a, f6.2, a)') "set xrange [", X_LOW, ":", X_HIGH, "]"
-        write(3,'(a)') "set yrange [*:0]"
-        write(3,'(a)') ""
-        write(3,'(a)') "plot '"//trim(datafile)//"' using 1:2 with lines ls 1 title '{/Symbol a} < 0', \"
-        write(3,'(a)') "     '"//trim(datafile)//"' using 1:3 with lines ls 2 title '{/Symbol a} > 0'"
-
-        close(3)
-    end subroutine
-end module
+end program

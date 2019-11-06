@@ -95,10 +95,6 @@ program jump
     datetime = date(1:4)//"_"//date(5:6)//"_"//date(7:8)
     datetime = trim(datetime)//"__"//time(1:2)//"_"//time(3:4)//"_"//time(5:6)
     datetime = trim(datetime)//"__N_"//trim(n_char)//"__P_"//trim(p_char)//"__A_"//trim(a_char)
-    
-#ifdef __unix__
-print*, "UNIX"
-#endif
 
     logfile  = trim(cwd)//"/out/log__"//trim(datetime)//".txt"
     datafile = trim(cwd)//"/out/data__"//trim(datetime)//".csv"

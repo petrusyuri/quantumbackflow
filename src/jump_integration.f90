@@ -254,21 +254,21 @@ contains
         write(3,'(a)') "set datafile separator ';'"
         write(3,'(a)') ""
         write(3,'(a)', advance = "no") "set title 'Backflow in jump defect: "
-        write(3,'(a, i4, a, i4, a, F8.2)') "N = ", int(N), ", P_{cutoff} = ", int(P_CUTOFF), ", |{/Symbol a}| = ", abs(ALPHA)
+        write(3,'(a, i4, a, i4, a, F8.2)') "N = ", int(N), ", P_{cutoff} = ", int(P_CUTOFF), ", |{/Symbola a}| = ", abs(ALPHA)
         write(3,'(a)') "set style line 1 linecolor rgb 'red' linewidth 2"
         write(3,'(a)') "set style line 2 linecolor rgb 'blue' linewidth 2"
         write(3,'(a)') "set style line 3 linecolor rgb 'forest-green' linewidth 2"
         write(3,'(a)') ""
         write(3,'(a)') "set label ''"
         write(3,'(a)') "set xlabel 'x_{0}'"
-        write(3,'(a)') "set ylabel '{/Symbol b}_V(f)'"
+        write(3,'(a)') "set ylabel '{/Symbola b}_V(f)'"
         write(3,'(a)') "set key center right"
         write(3,'(a)') ""
         write(3,'(a, f6.2, a, f6.2, a)') "set xrange [", X_LOW, ":", X_HIGH, "]"
         write(3,'(a)') "set yrange [*:0]"
         write(3,'(a)') ""
-        write(3,'(a)') "plot '"//trim(datafile)//"' using 1:2 with lines ls 1 title '{/Symbol a} < 0', \"
-        write(3,'(a)') "     '"//trim(datafile)//"' using 1:3 with lines ls 2 title '{/Symbol a} > 0'"
+        write(3,'(a)') "plot '"//trim(datafile)//"' using 1:2 with lines ls 1 title '{/Symbola a} < 0', \"
+        write(3,'(a)') "     '"//trim(datafile)//"' using 1:3 with lines ls 2 title '{/Symbola a} > 0'"
 
         close(3)
     end subroutine

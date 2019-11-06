@@ -1,5 +1,5 @@
 # Find all source files, create a list of corresponding object files
-SRCS = src/quadpack_double.f90 src/eispack.f90 src/jump_integration.f90 src/main.f90
+SRCS = $(wildcard src/*.f90)
 OBJS = $(patsubst %.f90,%.o,$(SRCS))
 
 # Compiler/Linker settings

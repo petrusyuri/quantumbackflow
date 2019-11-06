@@ -1,29 +1,25 @@
 # project name (generate executable with this name)
 TARGET   = backflow
 
+#compiler
 FC       = gfortran
-# compiling flags here
 FCFLAGS   = -Wall -O3 -ffast-math -fexpensive-optimizations -flto -s
 
-LINKER   = gfortran
-# linking flags here
-LFLAGS   =
+#dependencies
+DEPS = src/quadpack_double.f90 src/eispack.f90 src/jump_integration.f90
 
-# change these to proper directories where each file should be
-SRCDIR   = src
+#objects
+OBJ = quadpack_double.o eispack.o jump_integration.o main.o
 
-SOURCES  := $(wildcard $(SRCDIR)/*.f90)
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.f90=%.o)
-rm       = rm -f
+#compiling dependencies
+%.o: %.f90 $(DEPS)
+	$(FC) -c -o $@ $< $(FCFLAGS)
 
-$(TARGET): $(OBJECTS)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
-	@echo "Linking complete!"
-
-$(OBJECTS): %.o : $(SRCDIR)/%.f90
-	@$(FC) $(FCFLAGS) -c $< -o $@
+#compiling project
+$(TARGET): $(OBJ)
+	$(FC) -o $@ $^ $(FCFLAGS)
 	@echo "Compiled "$<" successfully!"
 
 clean:
-	@$(rm) $(OBJECTS)
+	rm -f *.o *.mod
 	@echo "Cleanup complete!"

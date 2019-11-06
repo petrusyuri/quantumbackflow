@@ -1,22 +1,31 @@
+# Directories
+SRCDIR = ./src/
+MODDIR = ./mod/
+OBJDIR = ./obj/
+
 # Find all source files, create a list of corresponding object files
-SRCS = $(wildcard src/*.f90)
-OBJS = $(patsubst %.f90,%.o,$(SRCS))
+SRCS = $(wildcard $(SRCDIR)*.f90)
+OBJS = $(patsubst %.f90, %.o, $(patsubst $(SRCDIR), $(OBJDIR), $(SRCS)))
 
 # Compiler/Linker settings
 FC      = gfortran
-FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s
+FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s -JDir $(MODDIR)
 FLFLAGS = 
 
 PROGRAM = backflow
 
-all: clean $(PROGRAM) clean
+all: $(PROGRAM)
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90
+	mkdir -p $(MODDIR)
+	mkdir -p $(OBJDIR)
 	$(FC) $(FCFLAGS) -c -o $@ $<
 
 # Linker
 $(PROGRAM) : $(OBJS)
+	mkdir -p $(MODDIR)
+	mkdir -p $(OBJDIR)
 	$(FC) $(FLFLAGS) -o $@ $^
 	
 clean:

@@ -20,8 +20,8 @@ $(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
 	@echo "Linking complete!"
 
-$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
-	@$(CC) $(FCFLAGS) -c $< -o $@
+$(OBJECTS): %.o : $(SRCDIR)/%.f90
+	@$(FC) $(FCFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
 clean:

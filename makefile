@@ -1,5 +1,5 @@
 # project name (generate executable with this name)
-TARGET   = quantumbackflow
+TARGET   = backflow
 
 FC       = gfortran
 # compiling flags here
@@ -11,20 +11,22 @@ LFLAGS   =
 
 # change these to proper directories where each file should be
 SRCDIR   = src
-OBJDIR   = obj
 
 SOURCES  := $(wildcard $(SRCDIR)/*.f90)
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.f90=$(OBJDIR)/%.o)
+OBJECTS  := $(SOURCES:$(SRCDIR)/%.f90=$%.o)
 rm       = rm -f
 
-
 $(TARGET): $(OBJECTS)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
-	@echo "Linking complete!"
+	@$(FC) $(OBJECTS) $(FCFLAGS) -o $@
+	@echo "Complete!"
 
-$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
-	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "Compiled "$<" successfully!"
+#$(TARGET): $(OBJECTS)
+#	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+#	@echo "Linking complete!"
+
+#$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.f90
+#	@$(CC) $(CFLAGS) -c $< -o $@
+#	@echo "Compiled "$<" successfully!"
 
 clean:
 	@$(rm) $(OBJECTS)

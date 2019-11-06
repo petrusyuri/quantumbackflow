@@ -4,10 +4,10 @@ OBJS = $(patsubst %.f90,%.o,$(SRCS))
 
 # Compiler/Linker settings
 FC      = gfortran
-FCFLAGS = -Wall -O3 -ffast-math -fexpensive-optimizations -flto -s
+FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s
 FLFLAGS = 
 
-PROGRAM = quantumbackflow
+PROGRAM = backflow
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90
@@ -17,9 +17,9 @@ $(OBJS) : %.o : %.f90
 $(PROGRAM) : $(OBJS)
 	$(FC) $(FLFLAGS) -o $@ $^
 
-clean:
-	rm -f *.o *.mod
-	@echo "Cleanup complete!"
+#clean:
+#	rm -f *.o *.mod
+#	@echo "Cleanup complete!"
 
 # Dependencies
 

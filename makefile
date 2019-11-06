@@ -9,6 +9,7 @@ FLFLAGS =
 
 PROGRAM = backflow
 
+debug:
 	@echo "SRCS = $(SRCS)"
 	@echo "OBJS = $(OBJS)"
 

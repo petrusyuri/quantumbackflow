@@ -249,7 +249,7 @@ contains
         open(3, file = gpltfile, status = 'new')
 
         write(3,'(a)') "set encoding utf8"
-        write(3,'(a)') "set terminal pdf size 960, 720 enhanced"
+        write(3,'(a)') "set terminal pdf size 4.0,3.0 enhanced"
         write(3,'(a)') "set output '"//trim(plotfile)//"'"
         write(3,'(a)') "set datafile separator ';'"
         write(3,'(a)') ""

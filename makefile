@@ -9,7 +9,7 @@ FLFLAGS =
 
 PROGRAM = backflow
 
-default: $(PROGRAM)
+all: clean $(PROGRAM) clean
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90
@@ -21,8 +21,6 @@ $(PROGRAM) : $(OBJS)
 	
 clean:
 	rm -rf *.mod $(OBJS)
-	
-.PHONY: debug default clean
 
 # Dependencies
 

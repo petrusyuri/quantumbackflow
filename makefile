@@ -9,8 +9,8 @@ FLFLAGS =
 
 PROGRAM = backflow
 
-@echo "SRCS = $(SRCS)"
-@echo "OBJS = $(OBJS)"
+	@echo "SRCS = $(SRCS)"
+	@echo "OBJS = $(OBJS)"
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90

@@ -1,25 +1,27 @@
-# project name (generate executable with this name)
-TARGET   = backflow
+# Find all source files, create a list of corresponding object files
+SRCS = src/quadpack_double.f90 src/eispack.f90 src/jump_integration.f90 src/main.f90
+OBJS = $(patsubst %.f90,%.o,$(SRCS))
 
-#compiler
-FC       = gfortran
-FCFLAGS   = -Wall -O3 -ffast-math -fexpensive-optimizations -flto -s
+# Compiler/Linker settings
+FC      = gfortran
+FCFLAGS = -Wall -O3 -ffast-math -fexpensive-optimizations -flto -s
+FLFLAGS = 
 
-#dependencies
-DEPS = src/quadpack_double.f90 src/eispack.f90 src/jump_integration.f90
+PROGRAM = quantumbackflow
 
-#objects
-OBJ = quadpack_double.o eispack.o jump_integration.o main.o
+# Compiler steps for all objects
+$(OBJS) : %.o : %.f90
+    $(FC) $(FCFLAGS) -o $@ $<
 
-#compiling project
-$(TARGET): $(OBJ)
-	$(FC) -o $@ $^ $(FCFLAGS)
-	@echo "Compiled "$<" successfully!"
-
-#compiling dependencies
-%.o: %.f90 $(DEPS)
-	$(FC) -c -o $@ $< $(FCFLAGS)
+# Linker
+$(PROGRAM) : $(OBJS)
+    $(FC) $(FLFLAGS) -o $@ $^
 
 clean:
 	rm -f *.o *.mod
 	@echo "Cleanup complete!"
+
+# Dependencies
+
+jump_integration.o : quadpack_double.o
+main.o: jump_integration.o eispack.o

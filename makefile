@@ -18,14 +18,10 @@ all: $(PROGRAM)
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90
-	mkdir -p $(MODDIR)
-	mkdir -p $(OBJDIR)
 	$(FC) $(FCFLAGS) -c -o $@ $<
 
 # Linker
 $(PROGRAM) : $(OBJS)
-	mkdir -p $(MODDIR)
-	mkdir -p $(OBJDIR)
 	$(FC) $(FLFLAGS) -o $@ $^
 	
 clean:
@@ -33,5 +29,5 @@ clean:
 
 # Dependencies
 
-src/jump_integration.o : src/quadpack_double.o
-src/main.o: src/jump_integration.o src/eispack.o
+$(SRCDIR)jump_integration.o : $(SRCDIR)quadpack_double.o
+$(SRCDIR)main.o: $(SRCDIR)jump_integration.o $(SRCDIR)eispack.o

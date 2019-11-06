@@ -36,5 +36,5 @@ clean:
 
 # Dependencies
 
-$(SRCDIR)jump_integration.o : $(SRCDIR)quadpack_double.o
-$(SRCDIR)main.o: $(SRCDIR)jump_integration.o $(SRCDIR)eispack.o
+$(OBJDIR)jump_integration.o : $(OBJDIR)quadpack_double.o
+$(OBJDIR)main.o: $(OBJDIR)jump_integration.o $(OBJDIR)eispack.o

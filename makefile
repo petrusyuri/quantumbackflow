@@ -9,7 +9,7 @@ FLFLAGS =
 
 PROGRAM = backflow
 
-all: clean $(PROGRAM)
+all: $(PROGRAM) clean
 
 # Compiler steps for all objects
 $(OBJS) : %.o : %.f90

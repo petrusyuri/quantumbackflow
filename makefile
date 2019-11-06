@@ -18,7 +18,7 @@ PROGRAM = backflow
 all: $(PROGRAM)
 
 # Compiler steps for all objects
-$(OBJS) : %.o : %.f90
+$(OBJS) : $(OBJDIR)%.o : $(SRCDIR)%.f90
 	$(FC) $(FCFLAGS) -c -o $@ $<
 
 # Linker

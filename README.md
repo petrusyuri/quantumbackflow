@@ -1,6 +1,14 @@
-# Jump Model
+# Integrable Defect and Quantum Backflow
 
-**Author:** Petrus Yuri and Alexandre Hefren
+**Authors:** 
+
+Alexandre Hefren
+_University of York_
+
+Petrus Yuri
+_Federal University of Ceará_
+
+## Introduction
 
 1. FUN_TYPE = 1 -> Gaussian Function
 2. FUN_TYPE = 2 -> Lorentzian Function

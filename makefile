@@ -11,8 +11,8 @@ MODS = $(patsubst %.f90, %.mod, $(patsubst $(SRCDIR)%, $(MODDIR)%, $(SRCS)))
 
 # Compiler/Linker settings
 FC      = gfortran
-FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s -J $(MODDIR)
-FLFLAGS = 
+#FCFLAGS = -O3 -ffast-math -fexpensive-optimizations -flto -s -J $(MODDIR)
+FCFLAGS = -O3 -J $(MODDIR)
 
 PROGRAM = backflow
 
@@ -24,7 +24,7 @@ $(OBJS) : $(OBJDIR)%.o : $(SRCDIR)%.f90
 
 # Linker
 $(PROGRAM) : $(OBJS)
-	$(FC) $(FLFLAGS) -o $@ $^
+	$(FC) $(FCFLAGS) -o $@ $^
 
 prep:
 	mkdir -p $(MODDIR)

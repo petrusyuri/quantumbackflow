@@ -1,12 +1,10 @@
 # Integrable Defect and Quantum Backflow
 
-**Authors:** 
+**Authors:** Alexandre Hefren <sup>1</sup> & Petrus Yuri <sup>2</sup>
 
-Alexandre Hefren
-_University of York_
 
-Petrus Yuri^2
-_Federal University of Ceará_
+<sup>1</sup> _University of York_
+<sup>2</sup> _Federal University of Ceará_
 
 ## Introduction
 

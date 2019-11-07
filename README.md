@@ -5,7 +5,7 @@
 Alexandre Hefren
 _University of York_
 
-Petrus Yuri
+Petrus Yuri^2
 _Federal University of Ceará_
 
 ## Introduction

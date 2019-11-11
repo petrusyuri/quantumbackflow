@@ -199,8 +199,8 @@ contains
         integer ( kind = 4 ), parameter :: limit = 5000
         integer ( kind = 4 ), parameter :: lenw = 4 * limit
         real ( kind = 8 ) abserr
-        real ( kind = 8 ), parameter :: epsabs = 1.0D-10
-        real ( kind = 8 ), parameter :: epsrel = 1.0D-10
+        real ( kind = 8 ), parameter :: epsabs = 1.0D-20
+        real ( kind = 8 ), parameter :: epsrel = 1.0D-20
         integer ( kind = 4 ) ier
         integer ( kind = 4 ), parameter :: key = 6
         integer ( kind = 4 ) last

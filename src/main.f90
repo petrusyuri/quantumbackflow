@@ -185,10 +185,10 @@ program jump
 
         call ch(MODEL_N, realMatrix, imagMatrix, w, .FALSE., zr,zi,ierr)
 
-        write(*, fmt = '(F15.12, A)', advance = "no") w(1), ", bf2 = "
-        write(1, fmt = '(F15.12, A)', advance = "no") w(1), ", bf2 = "
-        write(2, fmt = '(F15.12, A)', advance = "no") w(1), "; "
-        write(4, fmt = '(F15.12, A)', advance = "no") w(1), ", "
+        write(*, fmt = '(F15.8, A)', advance = "no") w(1), ", bf2 = "
+        write(1, fmt = '(F15.8, A)', advance = "no") w(1), ", bf2 = "
+        write(2, fmt = '(F15.8, A)', advance = "no") w(1), "; "
+        write(4, fmt = '(F15.8, A)', advance = "no") w(1), ", "
 
         call SetAlpha(MODEL_ALPHA)
 
@@ -207,10 +207,10 @@ program jump
 
         call ch(MODEL_N, realMatrix, imagMatrix, w, .FALSE., zr,zi,ierr)
 
-        write(*, fmt = '(F15.12)') w(1)
-        write(1, fmt = '(F15.12)') w(1)
-        write(2, fmt = '(F15.12)') w(1)
-        write(4, fmt = '(F15.12 a)') w(1), ";"
+        write(*, fmt = '(F15.8)') w(1)
+        write(1, fmt = '(F15.8)') w(1)
+        write(2, fmt = '(F15.8)') w(1)
+        write(4, fmt = '(F15.8 a)') w(1), ";"
 
         call system("gnuplot -p "//trim(gpltfile))
 
